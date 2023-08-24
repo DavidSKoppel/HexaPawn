@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-int player = 1;
+bool player = true;
 bool winState = false;
 bool CharacterLosing = false;
 
@@ -38,21 +38,21 @@ void DrawBoard()
     }
 }
 
-bool CheckValidMove(int player, string piece, string moveInput, string toInput)
+bool CheckValidMove(bool player, string piece, string moveInput, string toInput)
 {
     board.TryGetValue(toInput, out string field);
 
     int placement = board.Keys.ToList().IndexOf(moveInput);
     int placementTo = board.Keys.ToList().IndexOf(toInput);
 
-    if (player == 1 && piece == "p" && placementTo >= placement + 3 && placementTo <= placement + 5)
+    if (player == true && piece == "p" && placementTo >= placement + 3 && placementTo <= placement + 5)
     {
         if (field == "c" && placementTo != placement + 4 || placementTo == placement + 4 && field == ".")
         {
             return true;
         }
     }
-    else if (player == 2 && piece == "c" && placementTo >= placement - 5 && placementTo <= placement - 3)
+    else if (player == false && piece == "c" && placementTo >= placement - 5 && placementTo <= placement - 3)
     {
         if (field == "p" && placementTo != placement - 4 || placementTo == placement - 4 && field == ".")
         {
@@ -61,7 +61,7 @@ bool CheckValidMove(int player, string piece, string moveInput, string toInput)
     }
     return false;
 }
-void MovePiece()
+bool MovePiece()
 {
     Console.WriteLine("Move piece");
     string moveInput = Console.ReadLine();
@@ -87,59 +87,53 @@ void MovePiece()
     else
     {
         Console.WriteLine("Invalid");
+        return false;
     }
+    return true;
 }
 
 while (!winState)
 {
-    if (player == 1)
+    Console.Clear();
+    CharacterLosing = true;
+    string playerPiece = "";
+    if(player == true)
     {
-        CharacterLosing = true;
-        foreach (var piece in board)
-            if(piece.Value == "p")
-            {
-                for (int i = 0; i <= 15; i++)
-                {
-                    if(CheckValidMove(player, piece.Value, piece.Key, board.ElementAt(i).Key))
-                    {
-                        CharacterLosing = false;
-                    }
-                }
-            }
-        DrawBoard();
-        if (CharacterLosing)
-        {
-            Console.WriteLine("Computer wins");
-            break;
-        }
-        Console.WriteLine("Player turn");
-        MovePiece();
-        player = 2;
+        playerPiece = "p";
     }
-    else
+    else if(player == false)
     {
-        CharacterLosing = true;
-        foreach (var piece in board)
-            if (piece.Value == "c")
+        playerPiece = "c";
+    }
+    foreach (var piece in board)
+        if (piece.Value == playerPiece)
+        {
+            for (int i = 0; i <= 15; i++)
             {
-                for (int i = 0; i <= 15; i++)
+                if (CheckValidMove(player, playerPiece, piece.Key, board.ElementAt(i).Key))
                 {
-                    if (CheckValidMove(player, piece.Value, piece.Key, board.ElementAt(i).Key))
-                    {
-                        CharacterLosing = false;
-                    }
+                    CharacterLosing = false;
                 }
             }
-        DrawBoard();
-        if (CharacterLosing)
-        {
-            Console.WriteLine("Player wins");
-            break;
         }
+    DrawBoard();
+    if (CharacterLosing && player == false)
+    {
+        Console.WriteLine("Player wins");
+        break;
+    }
+    else if (CharacterLosing && player == true)
+    {
         Console.WriteLine("Computer turn");
-        MovePiece();
-        player = 1;
+        break;
     }
+    bool movedPiece = false;
+    while (!movedPiece) 
+    {
+        if(MovePiece())
+            movedPiece = true;
+    }
+    player = !player;
     for (int i = 5; i < 7; i++)
     {
         if (board.ElementAt(i).Value == "c")
