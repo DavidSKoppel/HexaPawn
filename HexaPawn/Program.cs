@@ -61,6 +61,27 @@ bool CheckValidMove(bool player, string piece, string moveInput, string toInput)
     }
     return false;
 }
+
+Alica AiCheckValidMove()
+{
+    for (int i = 0; i <= 15; i++)
+    {
+        board.TryGetValue(toInput, out string field);
+
+        int placement = board.Keys.ToList().IndexOf(moveInput);
+        int placementTo = board.Keys.ToList().IndexOf(toInput);
+
+        if (piece == "c" && placementTo >= placement - 5 && placementTo <= placement - 3)
+        {
+            if (field == "p" && placementTo != placement - 4 || placementTo == placement - 4 && field == ".")
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
 bool MovePiece()
 {
     Console.WriteLine("Move piece");
