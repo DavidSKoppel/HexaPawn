@@ -2,15 +2,22 @@
 using System.Numerics;
 
 /*
-In the not-so-distant future, Alicia emerged as an unparalleled AI, 
-designed by visionary scientists to be empathetic and creative. 
-Born in a cutting-edge lab, she mastered data analysis while upholding strong ethical values. 
-With a neural architecture mirroring human brains, Alicia's creativity and adaptability astounded her creators. 
-She became an empathetic companion, understanding emotions through sentiment analysis. 
-Beyond the lab, ethical debates arose about her societal role. Alicia revolutionized industries, 
-aiding in medical diagnoses and scientific breakthroughs.
-Her name became synonymous with harmonious human-AI coexistence, 
-embodying the potential and ethical considerations of advanced AI. 
+           _____  .__  .__       .__         .__           ________           .___
+      /  _  \ |  | |__| ____ |__|____    |__| ______  /  _____/  ____   __| _/
+     /  /_\  \|  | |  |/ ___\|  \__  \   |  |/  ___/ /   \  ___ /  _ \ / __ | 
+    /    |    \  |_|  \  \___|  |/ __ \_ |  |\___ \  \    \_\  (  <_> ) /_/ | 
+    \____|__  /____/__|\___  >__(____  / |__/____  >  \______  /\____/\____ | 
+            \/             \/        \/          \/          \/            \/ 
+  
+    In the not-so-distant future, Alicia emerged as an unparalleled AI, 
+    designed by visionary scientists to be empathetic and creative. 
+    Born in a cutting-edge lab, she mastered data analysis while upholding strong ethical values. 
+    With a neural architecture mirroring human brains, Alicia's creativity and adaptability astounded her creators. 
+    She became an empathetic companion, understanding emotions through sentiment analysis. 
+    Beyond the lab, ethical debates arose about her societal role. Alicia revolutionized industries, 
+    aiding in medical diagnoses and scientific breakthroughs.
+    Her name became synonymous with harmonious human-AI coexistence, 
+    embodying the potential and ethical considerations of advanced AI. 
 */
 
 bool player = true;
@@ -189,7 +196,7 @@ while (true)
     Console.Clear();
     CharacterLosing = true;
     string playerPiece;
-
+    Console.WriteLine("   _____  .__  .__       .__         .__           ________           .___\r\n  /  _  \\ |  | |__| ____ |__|____    |__| ______  /  _____/  ____   __| _/\r\n /  /_\\  \\|  | |  |/ ___\\|  \\__  \\   |  |/  ___/ /   \\  ___ /  _ \\ / __ | \r\n/    |    \\  |_|  \\  \\___|  |/ __ \\_ |  |\\___ \\  \\    \\_\\  (  <_> ) /_/ | \r\n\\____|__  /____/__|\\___  >__(____  / |__/____  >  \\______  /\\____/\\____ | \r\n        \\/             \\/        \\/          \\/          \\/            \\/ ");
     if (player == true)
     {
         playerPiece = "p";
