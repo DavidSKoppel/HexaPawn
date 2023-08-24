@@ -100,10 +100,12 @@ while (!winState)
     if(player == true)
     {
         playerPiece = "p";
+        Console.WriteLine("Player Turn");
     }
     else if(player == false)
     {
         playerPiece = "c";
+        Console.WriteLine("Computer Turn");
     }
     foreach (var piece in board)
         if (piece.Value == playerPiece)
@@ -130,8 +132,7 @@ while (!winState)
     bool movedPiece = false;
     while (!movedPiece) 
     {
-        if(MovePiece())
-            movedPiece = true;
+        movedPiece = MovePiece();
     }
     player = !player;
     for (int i = 5; i < 7; i++)
