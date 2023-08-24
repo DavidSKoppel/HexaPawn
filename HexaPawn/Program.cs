@@ -133,25 +133,39 @@ bool MovePiece()
 
 void AliciaMovePiece(AliciaModel aliciasLuciousMove)
 {
+    board.TryGetValue(aliciasLuciousMove.MoveFrom, out string piece);
+    board.TryGetValue(aliciasLuciousMove.MoveTo, out string field);
+
     foreach (var memory in aliciasMemory)
     {
         if (aliciasLuciousMove.MoveFrom == memory.MoveFrom && aliciasLuciousMove.MoveTo == memory.MoveTo)
         {
-            board.TryGetValue(aliciasLuciousMove.MoveFrom, out string piece);
-            board.TryGetValue(aliciasLuciousMove.MoveTo, out string field);
-
-            board[aliciasLuciousMove.MoveFrom] = field;
-            board[aliciasLuciousMove.MoveTo] = piece;
+            if (field == "c" || field == "p")
+            {
+                board[aliciasLuciousMove.MoveFrom] = ".";
+                board[aliciasLuciousMove.MoveTo] = piece;
+            }
+            else
+            {
+                board[aliciasLuciousMove.MoveFrom] = field;
+                board[aliciasLuciousMove.MoveTo] = piece;
+            }
             break;
         }
         else
         {
             aliciasMemory.Add(aliciasLuciousMove);
-            board.TryGetValue(aliciasLuciousMove.MoveFrom, out string piece);
-            board.TryGetValue(aliciasLuciousMove.MoveTo, out string field);
+            if (field == "c" || field == "p")
+            {
+                board[aliciasLuciousMove.MoveFrom] = ".";
+                board[aliciasLuciousMove.MoveTo] = piece;
+            }
+            else
+            {
+                board[aliciasLuciousMove.MoveFrom] = field;
+                board[aliciasLuciousMove.MoveTo] = piece;
+            }
 
-            board[aliciasLuciousMove.MoveFrom] = field;
-            board[aliciasLuciousMove.MoveTo] = piece;
             break;
         }
     }
