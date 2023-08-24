@@ -14,28 +14,34 @@ embodying the potential and ethical considerations of advanced AI.
 */
 
 bool player = true;
-bool winState = false;
+bool winState = true;
 bool CharacterLosing = false;
+AliciaModel aliciaLastMemory = new AliciaModel { MoveFrom = "", MoveTo = "", Active = false};
 
 List<AliciaModel> aliciasMemory = new List<AliciaModel>();
 Dictionary<string, string> board = new Dictionary<string, string>();
 
-board.Add("0", " ");
-board.Add("1", "A");
-board.Add("2", "B");
-board.Add("3", "C");
-board.Add("4", "1");
-board.Add("A1", "p");
-board.Add("B1", "p");
-board.Add("C1", "p");
-board.Add("6", "2");
-board.Add("A2", ".");
-board.Add("B2", ".");
-board.Add("C2", ".");
-board.Add("7", "3");
-board.Add("A3", "c");
-board.Add("B3", "c");
-board.Add("C3", "c");
+void CreateBoard()
+{
+    board.Clear();
+    board.Add("0", " ");
+    board.Add("1", "A");
+    board.Add("2", "B");
+    board.Add("3", "C");
+    board.Add("4", "1");
+    board.Add("A1", "p");
+    board.Add("B1", "p");
+    board.Add("C1", "p");
+    board.Add("6", "2");
+    board.Add("A2", ".");
+    board.Add("B2", ".");
+    board.Add("C2", ".");
+    board.Add("7", "3");
+    board.Add("A3", "c");
+    board.Add("B3", "c");
+    board.Add("C3", "c");
+    winState = false;
+}
 
 void DrawBoard()
 {
@@ -175,11 +181,17 @@ void AliciaMovePiece(AliciaModel aliciasLuciousMove)
 
 while (true)
 {
+    if (winState)
+    {
+        player = true;
+        CreateBoard();
+    }
     bool concede = false;
     Console.Clear();
     CharacterLosing = true;
-    string playerPiece = "";
-    if(player == true)
+    string playerPiece;
+
+    if (player == true)
     {
         playerPiece = "p";
         Console.WriteLine("Player Turn");
@@ -190,77 +202,116 @@ while (true)
             movedPiece = MovePiece();
         }
     }
-    else if(player == false)
+    else if (player == false)
     {
         playerPiece = "c";
         Console.WriteLine("Computer Turn");
         List<AliciaModel> moves = AliciaCheckValidMove();
+        bool moveDone = false;
         foreach (var move in moves)
         {
             if (aliciasMemory.Count == 0)
             {
                 aliciasMemory.Add(move);
                 AliciaMovePiece(move);
+                aliciaLastMemory = move;
                 break;
             }
-            bool moveDone = false;
             foreach (var memory in aliciasMemory)
             {
-                if (move == memory && memory.Active != false)
+                if (move.MoveTo == memory.MoveTo && move.MoveFrom == memory.MoveFrom && memory.Active == false)
                 {
-                    AliciaMovePiece(move);
+                    break;
+                }
+                else
+                {
                     moveDone = true;
+                    AliciaMovePiece(move);
+                    aliciaLastMemory = move;
                     break;
                 }
             }
-            if (moveDone)
-            {
-                break;
-            }
-            else
-            {
-                concede = true;
-            }
+        }
+        if (!moveDone)
+        {
+            concede = true;
         }
     }
-    foreach (var piece in board)
-        if (piece.Value == playerPiece)
+    if (player)
+    {
+        playerPiece = "c";
+        foreach (var piece in board)
         {
-            for (int i = 0; i <= 15; i++)
+            if (piece.Value == playerPiece)
             {
-                if (CheckValidMove(player, playerPiece, piece.Key, board.ElementAt(i).Key))
+                for (int i = 0; i <= 15; i++)
                 {
-                    CharacterLosing = false;
+                    if (CheckValidMove(!player, playerPiece, piece.Key, board.ElementAt(i).Key))
+                    {
+                        CharacterLosing = false;
+                    }
                 }
             }
         }
-    if (CharacterLosing && player == false || concede)
+    }
+    else
+    {
+        playerPiece = "p";
+        foreach (var piece in board)
+        {
+            if (piece.Value == playerPiece)
+            {
+                for (int i = 0; i <= 15; i++)
+                {
+                    if (CheckValidMove(!player, playerPiece, piece.Key, board.ElementAt(i).Key))
+                    {
+                        CharacterLosing = false;
+                    }
+                }
+            }
+        }
+    }
+
+    if (CharacterLosing && player == false)
+    {
+        DrawBoard();
+        Console.WriteLine("Computer wins");
+        Console.ReadKey();
+        winState = true;
+    }
+    else if (CharacterLosing && player == true || concede)
     {
         Console.WriteLine("Player wins");
-        break;
-    }
-    else if (CharacterLosing && player == true)
-    {
-        Console.WriteLine("Computer turn");
-        break;
+        Console.ReadKey();
+        winState = true;
+        foreach (var memory in aliciasMemory)
+        {
+            if (memory.MoveFrom == aliciaLastMemory.MoveFrom && memory.MoveTo == aliciaLastMemory.MoveTo)
+                memory.Active = false;
+        }
     }
     player = !player;
-    for (int i = 5; i < 7; i++)
+    for (int i = 5; i <= 7; i++)
     {
         if (board.ElementAt(i).Value == "c")
         {
-            Console.WriteLine("Computer win");
+            Console.WriteLine("Computer reached end win");
+            Console.ReadKey();
             winState = true;
-            break;
         }
     }
-    for (int i = 13; i < 15; i++) 
+    for (int i = 13; i <= 15; i++) 
     { 
         if (board.ElementAt(i).Value == "p")
         {
-            Console.WriteLine("Player win");
+            Console.WriteLine("Player reached end win");
+            Console.ReadKey();
             winState = true;
-            break;
+            foreach (var memory in aliciasMemory)
+            {
+                if(memory.MoveFrom == aliciaLastMemory.MoveFrom && memory.MoveTo == aliciaLastMemory.MoveTo)
+                    memory.Active = false;
+            }
         }
     }
 }
