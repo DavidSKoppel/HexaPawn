@@ -1,6 +1,18 @@
 ﻿using HexaPawn;
 using System.Numerics;
 
+/*
+In the not-so-distant future, Alicia emerged as an unparalleled AI, 
+designed by visionary scientists to be empathetic and creative. 
+Born in a cutting-edge lab, she mastered data analysis while upholding strong ethical values. 
+With a neural architecture mirroring human brains, Alicia's creativity and adaptability astounded her creators. 
+She became an empathetic companion, understanding emotions through sentiment analysis. 
+Beyond the lab, ethical debates arose about her societal role. Alicia revolutionized industries, 
+aiding in medical diagnoses and scientific breakthroughs.
+Her name became synonymous with harmonious human-AI coexistence, 
+embodying the potential and ethical considerations of advanced AI. 
+*/
+
 bool player = true;
 bool winState = false;
 bool CharacterLosing = false;
@@ -64,7 +76,7 @@ bool CheckValidMove(bool player, string piece, string moveInput, string toInput)
     return false;
 }
 
-List<AliciaModel> AiCheckValidMove()
+List<AliciaModel> AliciaCheckValidMove()
 {
     List<AliciaModel> aliciaMoves = new List<AliciaModel>();
     foreach (var piece in board)
@@ -119,35 +131,32 @@ bool MovePiece()
     return true;
 }
 
-bool AliciaMovePiece()
+void AliciaMovePiece(AliciaModel aliciasLuciousMove)
 {
-    Console.WriteLine("Move piece");
-    string moveInput = Console.ReadLine().ToUpper();
-    Console.WriteLine("To where?");
-    string toInput = Console.ReadLine().ToUpper();
-
-    board.TryGetValue(moveInput, out string piece);
-    board.TryGetValue(toInput, out string field);
-
-    if (CheckValidMove(player, piece, moveInput, toInput))
+    foreach (var memory in aliciasMemory)
     {
-        if (field == "c" || field == "p")
+        if (aliciasLuciousMove.MoveFrom == memory.MoveFrom && aliciasLuciousMove.MoveTo == memory.MoveTo)
         {
-            board[moveInput] = ".";
-            board[toInput] = piece;
+            board.TryGetValue(aliciasLuciousMove.MoveFrom, out string piece);
+            board.TryGetValue(aliciasLuciousMove.MoveTo, out string field);
+
+            board[aliciasLuciousMove.MoveFrom] = field;
+            board[aliciasLuciousMove.MoveTo] = piece;
+            break;
         }
         else
         {
-            board[moveInput] = field;
-            board[toInput] = piece;
+            aliciasMemory.Add(aliciasLuciousMove);
+            board.TryGetValue(aliciasLuciousMove.MoveFrom, out string piece);
+            board.TryGetValue(aliciasLuciousMove.MoveTo, out string field);
+
+            board[aliciasLuciousMove.MoveFrom] = field;
+            board[aliciasLuciousMove.MoveTo] = piece;
+            break;
         }
     }
-    else
-    {
-        Console.WriteLine("Invalid");
-        return false;
-    }
-    return true;
+
+
 }
 
 while (!winState)
@@ -165,7 +174,7 @@ while (!winState)
     {
         playerPiece = "c";
         Console.WriteLine("Computer Turn");
-        List<AliciaModel> moves = AiCheckValidMove();
+        List<AliciaModel> moves = AliciaCheckValidMove();
         foreach (var move in moves)
         {
             bool moveDone = false;
