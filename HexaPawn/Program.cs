@@ -1,9 +1,11 @@
-﻿using System.Numerics;
+﻿using HexaPawn;
+using System.Numerics;
 
 bool player = true;
 bool winState = false;
 bool CharacterLosing = false;
 
+List<AliciaModel> aliciasMemory = new List<AliciaModel>();
 Dictionary<string, string> board = new Dictionary<string, string>();
 
 board.Add("0", " ");
@@ -62,24 +64,28 @@ bool CheckValidMove(bool player, string piece, string moveInput, string toInput)
     return false;
 }
 
-Alica AiCheckValidMove()
+List<AliciaModel> AiCheckValidMove()
 {
-    for (int i = 0; i <= 15; i++)
-    {
-        board.TryGetValue(toInput, out string field);
-
-        int placement = board.Keys.ToList().IndexOf(moveInput);
-        int placementTo = board.Keys.ToList().IndexOf(toInput);
-
-        if (piece == "c" && placementTo >= placement - 5 && placementTo <= placement - 3)
-        {
-            if (field == "p" && placementTo != placement - 4 || placementTo == placement - 4 && field == ".")
+    List<AliciaModel> aliciaMoves = new List<AliciaModel>();
+    foreach (var piece in board)
+        if (piece.Value == "c")
+            for (int i = 0; i <= 15; i++)
             {
-                return true;
+                string toInput = board.ElementAt(i).Key;
+                string field = board.ElementAt(i).Value;
+
+                int placement = board.Keys.ToList().IndexOf(piece.Key);
+                int placementTo = board.Keys.ToList().IndexOf(toInput);
+
+                if (placementTo >= placement - 5 && placementTo <= placement - 3)
+                {
+                    if (field == "p" && placementTo != placement - 4 || placementTo == placement - 4 && field == ".")
+                    {
+                        aliciaMoves.Add(new AliciaModel { MoveTo = toInput, MoveFrom = piece.Key, Active = true });
+                    }
+                }
             }
-        }
-        return false;
-    }
+    return aliciaMoves;
 }
 
 bool MovePiece()
@@ -158,6 +164,29 @@ while (!winState)
     {
         playerPiece = "c";
         Console.WriteLine("Computer Turn");
+        List<AliciaModel> moves = AiCheckValidMove();
+        foreach (var move in moves)
+        {
+            bool moveDone = false;
+            foreach (var memory in aliciasMemory)
+            {
+                if (move == memory && memory.Active != false)
+                {
+                    AliciaMovePiece(move);
+                    moveDone = true;
+                    break;
+                }
+            }
+            if (moveDone)
+            {
+                break;
+            }
+            else
+            {
+                AliciaMovePiece(move);
+                break;
+            }
+        }
     }
     foreach (var piece in board)
         if (piece.Value == playerPiece)
