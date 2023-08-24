@@ -64,9 +64,9 @@ bool CheckValidMove(bool player, string piece, string moveInput, string toInput)
 bool MovePiece()
 {
     Console.WriteLine("Move piece");
-    string moveInput = Console.ReadLine();
+    string moveInput = Console.ReadLine().ToUpper();
     Console.WriteLine("To where?");
-    string toInput = Console.ReadLine();
+    string toInput = Console.ReadLine().ToUpper();
 
     board.TryGetValue(moveInput, out string piece);
     board.TryGetValue(toInput, out string field);
