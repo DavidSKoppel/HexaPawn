@@ -113,6 +113,37 @@ bool MovePiece()
     return true;
 }
 
+bool AliciaMovePiece()
+{
+    Console.WriteLine("Move piece");
+    string moveInput = Console.ReadLine().ToUpper();
+    Console.WriteLine("To where?");
+    string toInput = Console.ReadLine().ToUpper();
+
+    board.TryGetValue(moveInput, out string piece);
+    board.TryGetValue(toInput, out string field);
+
+    if (CheckValidMove(player, piece, moveInput, toInput))
+    {
+        if (field == "c" || field == "p")
+        {
+            board[moveInput] = ".";
+            board[toInput] = piece;
+        }
+        else
+        {
+            board[moveInput] = field;
+            board[toInput] = piece;
+        }
+    }
+    else
+    {
+        Console.WriteLine("Invalid");
+        return false;
+    }
+    return true;
+}
+
 while (!winState)
 {
     Console.Clear();
