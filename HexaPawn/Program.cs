@@ -146,7 +146,7 @@ void AliciaMovePiece(AliciaModel aliciasLuciousMove)
     {
         if (aliciasLuciousMove.MoveFrom == memory.MoveFrom && aliciasLuciousMove.MoveTo == memory.MoveTo)
         {
-            if (field == "c" || field == "p")
+            if (field == "p")
             {
                 board[aliciasLuciousMove.MoveFrom] = ".";
                 board[aliciasLuciousMove.MoveTo] = piece;
@@ -161,7 +161,7 @@ void AliciaMovePiece(AliciaModel aliciasLuciousMove)
         else
         {
             aliciasMemory.Add(aliciasLuciousMove);
-            if (field == "c" || field == "p")
+            if (field == "p")
             {
                 board[aliciasLuciousMove.MoveFrom] = ".";
                 board[aliciasLuciousMove.MoveTo] = piece;
@@ -175,8 +175,7 @@ void AliciaMovePiece(AliciaModel aliciasLuciousMove)
             break;
         }
     }
-
-
+    aliciaLastMemory = aliciasLuciousMove;
 }
 
 while (true)
@@ -214,22 +213,25 @@ while (true)
             {
                 aliciasMemory.Add(move);
                 AliciaMovePiece(move);
-                aliciaLastMemory = move;
+                moveDone = true;
                 break;
             }
             foreach (var memory in aliciasMemory)
             {
                 if (move.MoveTo == memory.MoveTo && move.MoveFrom == memory.MoveFrom && memory.Active == false)
                 {
+                    moveDone = false;
                     break;
                 }
                 else
                 {
                     moveDone = true;
-                    AliciaMovePiece(move);
-                    aliciaLastMemory = move;
-                    break;
                 }
+            }
+            if (moveDone)
+            {
+                AliciaMovePiece(move);
+                break;
             }
         }
         if (!moveDone)
@@ -271,10 +273,9 @@ while (true)
             }
         }
     }
-
+    DrawBoard();
     if (CharacterLosing && player == false)
     {
-        DrawBoard();
         Console.WriteLine("Computer wins");
         Console.ReadKey();
         winState = true;
