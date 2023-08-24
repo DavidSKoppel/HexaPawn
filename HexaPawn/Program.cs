@@ -173,7 +173,7 @@ void AliciaMovePiece(AliciaModel aliciasLuciousMove)
 
 }
 
-while (!winState)
+while (true)
 {
     bool concede = false;
     Console.Clear();
@@ -183,6 +183,12 @@ while (!winState)
     {
         playerPiece = "p";
         Console.WriteLine("Player Turn");
+        DrawBoard();
+        bool movedPiece = false;
+        while (!movedPiece)
+        {
+            movedPiece = MovePiece();
+        }
     }
     else if(player == false)
     {
@@ -191,6 +197,12 @@ while (!winState)
         List<AliciaModel> moves = AliciaCheckValidMove();
         foreach (var move in moves)
         {
+            if (aliciasMemory.Count == 0)
+            {
+                aliciasMemory.Add(move);
+                AliciaMovePiece(move);
+                break;
+            }
             bool moveDone = false;
             foreach (var memory in aliciasMemory)
             {
@@ -207,15 +219,7 @@ while (!winState)
             }
             else
             {
-                if (aliciasMemory.Count == 0)
-                {
-                    AliciaMovePiece(move);
-                    break;
-                }
-                else
-                {
-                    concede = true;
-                }
+                concede = true;
             }
         }
     }
@@ -230,7 +234,6 @@ while (!winState)
                 }
             }
         }
-    DrawBoard();
     if (CharacterLosing && player == false || concede)
     {
         Console.WriteLine("Player wins");
@@ -240,11 +243,6 @@ while (!winState)
     {
         Console.WriteLine("Computer turn");
         break;
-    }
-    bool movedPiece = false;
-    while (!movedPiece) 
-    {
-        movedPiece = MovePiece();
     }
     player = !player;
     for (int i = 5; i < 7; i++)
