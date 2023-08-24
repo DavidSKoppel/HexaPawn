@@ -152,6 +152,7 @@ bool AliciaMovePiece()
 
 while (!winState)
 {
+    bool concede = false;
     Console.Clear();
     CharacterLosing = true;
     string playerPiece = "";
@@ -183,8 +184,15 @@ while (!winState)
             }
             else
             {
-                AliciaMovePiece(move);
-                break;
+                if (aliciasMemory.Count == 0)
+                {
+                    AliciaMovePiece(move);
+                    break;
+                }
+                else
+                {
+                    concede = true;
+                }
             }
         }
     }
@@ -200,7 +208,7 @@ while (!winState)
             }
         }
     DrawBoard();
-    if (CharacterLosing && player == false)
+    if (CharacterLosing && player == false || concede)
     {
         Console.WriteLine("Player wins");
         break;
