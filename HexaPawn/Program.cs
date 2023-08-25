@@ -23,6 +23,8 @@ using System.Numerics;
 bool player = true;
 bool winState = true;
 bool CharacterLosing = false;
+bool firstTime = true;
+int boardSize = 0;
 AliciaModel aliciaLastMemory = new AliciaModel { MoveFrom = "", MoveTo = "", Active = false};
 
 List<AliciaModel> aliciasMemory = new List<AliciaModel>();
@@ -31,6 +33,21 @@ Dictionary<string, string> board = new Dictionary<string, string>();
 void CreateBoard()
 {
     board.Clear();
+    Console.WriteLine("Give board size");
+    if (firstTime)
+    {
+        boardSize = Convert.ToInt32(Console.ReadLine());
+        firstTime = false;
+    }
+    for (int i = 0; i <= boardSize -1; i++)
+        for (int j = 0; j <= boardSize -1; j++)
+            if(i == 0)
+                board.Add(i.ToString() + j.ToString(),"p");
+            else if(i == boardSize - 1)
+                board.Add(i.ToString() + j.ToString(),"c");
+            else
+                board.Add(i.ToString() + j.ToString(),".");
+    /*
     board.Add("0", " ");
     board.Add("1", "A");
     board.Add("2", "B");
@@ -46,17 +63,17 @@ void CreateBoard()
     board.Add("7", "3");
     board.Add("A3", "c");
     board.Add("B3", "c");
-    board.Add("C3", "c");
+    board.Add("C3", "c");*/
     winState = false;
 }
 
 void DrawBoard()
 {
     int constructBoard = 1;
-    for (int i = 0; i <= 15; i++)
+    for (int i = 0; i <= boardSize*boardSize - 1; i++)
     {
-        Console.Write("  " + board.ElementAt(i).Value + "  ");
-        if (constructBoard % 4 == 0)
+        Console.Write(" " + board.ElementAt(i).Value + " ");
+        if (constructBoard % boardSize == 0)
         {
             Console.WriteLine();
             constructBoard = 0;
@@ -72,9 +89,20 @@ bool CheckValidMove(bool player, string piece, string moveInput, string toInput)
     int placement = board.Keys.ToList().IndexOf(moveInput);
     int placementTo = board.Keys.ToList().IndexOf(toInput);
 
-    if (player == true && piece == "p" && placementTo >= placement + 3 && placementTo <= placement + 5)
+    if (player == true && piece == "p" && placementTo >= placement + boardSize -1 && placementTo <= placement + boardSize +1)
     {
-        if (field == "c" && placementTo != placement + 4 || placementTo == placement + 4 && field == ".")
+        if (field == "c" && placementTo != placement + boardSize)
+        {
+            if (placement % boardSize == 0 && placementTo == placement + boardSize - 1 || placement % boardSize == boardSize - 1 && placementTo == placement + boardSize + 1)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        else if( placementTo == placement + boardSize && field == ".")
         {
             return true;
         }
@@ -83,7 +111,8 @@ bool CheckValidMove(bool player, string piece, string moveInput, string toInput)
     {
         if (field == "p" && placementTo != placement - 4 || placementTo == placement - 4 && field == ".")
         {
-            return true;
+            if (placement % boardSize == 0 && placementTo != placement + boardSize + 1 || placement % boardSize == boardSize - 1 && placementTo != placement + boardSize - 1)
+                return true;
         }
     }
     return false;
@@ -94,7 +123,7 @@ List<AliciaModel> AliciaCheckValidMove()
     List<AliciaModel> aliciaMoves = new List<AliciaModel>();
     foreach (var piece in board)
         if (piece.Value == "c")
-            for (int i = 0; i <= 15; i++)
+            for (int i = 0; i <= boardSize*boardSize -1; i++)
             {
                 string toInput = board.ElementAt(i).Key;
                 string field = board.ElementAt(i).Value;
@@ -102,9 +131,19 @@ List<AliciaModel> AliciaCheckValidMove()
                 int placement = board.Keys.ToList().IndexOf(piece.Key);
                 int placementTo = board.Keys.ToList().IndexOf(toInput);
 
-                if (placementTo >= placement - 5 && placementTo <= placement - 3)
+                if (placementTo >= placement - boardSize - 1 && placementTo <= placement - boardSize + 1)
                 {
-                    if (field == "p" && placementTo != placement - 4 || placementTo == placement - 4 && field == ".")
+                    if (field == "p" && placementTo != placement - boardSize)
+                    {
+                        if (placement % boardSize == 0 && placementTo != placement + boardSize + 1 || placement % boardSize == boardSize - 1 && placementTo != placement + boardSize - 1)
+                        {
+                        }
+                        else
+                        {
+                            aliciaMoves.Add(new AliciaModel { MoveTo = toInput, MoveFrom = piece.Key, Active = true });
+                        }
+                    } 
+                    else if(placementTo == placement - boardSize && field == ".")
                     {
                         aliciaMoves.Add(new AliciaModel { MoveTo = toInput, MoveFrom = piece.Key, Active = true });
                     }
@@ -243,6 +282,7 @@ while (true)
         }
         if (!moveDone)
         {
+            Console.WriteLine("Alicia Conceded");
             concede = true;
         }
     }
@@ -299,7 +339,7 @@ while (true)
         }
     }
     player = !player;
-    for (int i = 5; i <= 7; i++)
+    for (int i = 0; i <= boardSize - 1; i++)
     {
         if (board.ElementAt(i).Value == "c")
         {
@@ -308,7 +348,7 @@ while (true)
             winState = true;
         }
     }
-    for (int i = 13; i <= 15; i++) 
+    for (int i = boardSize*boardSize-boardSize; i <= boardSize*boardSize-1; i++) 
     { 
         if (board.ElementAt(i).Value == "p")
         {
