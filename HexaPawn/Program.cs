@@ -232,8 +232,8 @@ while (true)
         CreateBoard();
     }
     bool concede = false;
-    Console.Clear();
     CharacterLosing = true;
+    Console.Clear();
     string playerPiece;
     Console.WriteLine("   _____  .__  .__       .__         .__           ________           .___\r\n  /  _  \\ |  | |__| ____ |__|____    |__| ______  /  _____/  ____   __| _/\r\n /  /_\\  \\|  | |  |/ ___\\|  \\__  \\   |  |/  ___/ /   \\  ___ /  _ \\ / __ | \r\n/    |    \\  |_|  \\  \\___|  |/ __ \\_ |  |\\___ \\  \\    \\_\\  (  <_> ) /_/ | \r\n\\____|__  /____/__|\\___  >__(____  / |__/____  >  \\______  /\\____/\\____ | \r\n        \\/             \\/        \\/          \\/          \\/            \\/ ");
     if (player == true)
@@ -293,7 +293,7 @@ while (true)
         {
             if (piece.Value == playerPiece)
             {
-                for (int i = 0; i <= 15; i++)
+                for (int i = 0; i <= boardSize*boardSize-1; i++)
                 {
                     if (CheckValidMove(!player, playerPiece, piece.Key, board.ElementAt(i).Key))
                     {
@@ -310,7 +310,7 @@ while (true)
         {
             if (piece.Value == playerPiece)
             {
-                for (int i = 0; i <= 15; i++)
+                for (int i = 0; i <= boardSize * boardSize - 1; i++)
                 {
                     if (CheckValidMove(!player, playerPiece, piece.Key, board.ElementAt(i).Key))
                     {
